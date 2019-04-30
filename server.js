@@ -24,22 +24,20 @@ app.get('/location', (request, response) => {
   }
 });
 
-//Helper Function
-let searchCoords = (query) => {
-  const geoData = require('./data/geo.json');
-  const location = new Location(query, geoData);
-  
-  return location;
-};
-
-
 function Location(query, geoData) {
   this.search_query = query;
   this.formatted_query = geoData.results[0].formatted_address;
   this.latitude = geoData.results[0].geometry.location.lat;
-  this. longitude = geoData.results[0].geometry.location.lng;
+  this.longitude = geoData.results[0].geometry.location.lng;
 };
 
 
+//Helper Function
+let searchCoords = (query) => {
+  const geoData = require('./data/geo.json');
+  const location = new Location(query, geoData);
+  console.log(location);
+  return location;
+};
 
 app.listen(PORT, () => console.log(`app is listening ${PORT}`));
