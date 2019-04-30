@@ -20,7 +20,8 @@ app.get('/location', (request, response) => {
   }
   catch(error) {
     console.error(error);
-    response.status(500).send('Status: 500. You suck. User error');
+    let message = errorMessage();
+    response.status(message.status).send(message.responseText);
   }
 });
 
@@ -48,17 +49,17 @@ app.get('/weather', (request, response) => {
   }
   catch(error) {
     console.error(error);
-    response.status(500).send('Status: 500. You suck. User error');
+    let message = errorMessage();
+    response.status(message.status).send(message.responseText);
+    
   }
 });
 
 
 let searchWeather = (query) => {
-  
   const weatherData = require('./data/darksky.json');
   const weather = new Weather(searchCoords(query), weatherData);
   const weatherArr = [];
-  
   weather.forecast.forEach( (element) => {
     let myDate = new Date(element.time * 1000);
     let newDate = myDate.toGMTString() + myDate.toLocaleString();
@@ -80,7 +81,14 @@ function Weather(query, weatherData) {
 
 }
 
-
+let errorMessage = () => {
+  let errorObj = {
+    status: 500,
+    responseText: 'Sorry something went wrong',
+  };
+  console.log(errorObj);
+  return errorObj;
+};
 
 
 app.listen(PORT, () => console.log(`app is listening ${PORT}`));

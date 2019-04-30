@@ -26,19 +26,19 @@ Actual time needed to complete: 1:30 hr
 
 ## Number and name of feature: #3 Weather
 
-Estimate of time needed to complete: 
+Estimate of time needed to complete: 2 hours
 
-Start time: 
+Start time: 10:20am
 
-Finish time: 
+Finish time: 11:30am
 
-Actual time needed to complete: 
+Actual time needed to complete: 50 min
 
 ## Number and name of feature: #4 Errors
 
-Estimate of time needed to complete: 
+Estimate of time needed to complete: 30 min 
 
-Start time: 
+Start time: 11:30
 
 Finish time: 
 
