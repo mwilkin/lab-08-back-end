@@ -40,20 +40,23 @@ Estimate of time needed to complete: 30 min
 
 Start time: 11:30
 
-Finish time: 
+Finish time: 12:30
 
-Actual time needed to complete: 
+Actual time needed to complete: 1 hour
 
 
 
 ## Overview
 <!-- Provide a high level overview of what this application is and why you are building it, beyond the fact that it's an assignment for this class. (i.e. What's your problem domain?) -->
+An api interaction app
 
 ## Getting Started
 <!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
+copy the front end and run it on liveserver using the heroku link or also linking the backend and using localhost
 
 ## Architecture
 <!-- Provide a detailed description of the application design. What technologies (languages, libraries, etc) you're using, and any other relevant design information. -->
+using js html css heroku liveserver postman jquery
 
 ## Change Log
 <!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an examples:
@@ -62,3 +65,7 @@ Actual time needed to complete:
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
+repo setup
+locations
+weather
+errors
