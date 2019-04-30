@@ -26,7 +26,7 @@ app.get('/location', (request, response) => {
 
 //Helper Function
 let searchCoords = (query) => {
-  const geoDate = require('./data/geo.json');
+  const geoData = require('./data/geo.json');
   const location = {
     search_query: query,
     formatted_query: geoData.results[0].formatted_address,
