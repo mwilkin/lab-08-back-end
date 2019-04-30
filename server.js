@@ -60,9 +60,11 @@ let searchWeather = (query) => {
   const weatherArr = [];
   
   weather.forecast.forEach( (element) => {
+    let myDate = new Date(element.time * 1000);
+    let newDate = myDate.toGMTString() + myDate.toLocaleString();
     let tempObj = {
       forecast: element['summary'],
-      time: element['time'],
+      time: newDate,
     };
     weatherArr.push(tempObj);
   });
@@ -72,6 +74,8 @@ let searchWeather = (query) => {
 
 function Weather(query, weatherData) {
   this.search_query = query;
+  this.latitude = query.latitude;
+  this.longitude = query.longitude;
   this.forecast = weatherData.daily.data;
 
 }
