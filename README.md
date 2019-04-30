@@ -8,11 +8,11 @@
 
 Estimate of time needed to complete: 15 min
 
-Start time: 8am
+Start time: 8:00am
 
-Finish time: _____
+Finish time: 8:40am
 
-Actual time needed to complete: _____
+Actual time needed to complete: 40 min
 
 ## Number and name of feature: #2 Locations
 
