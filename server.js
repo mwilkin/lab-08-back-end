@@ -27,14 +27,19 @@ app.get('/location', (request, response) => {
 //Helper Function
 let searchCoords = (query) => {
   const geoData = require('./data/geo.json');
-  const location = {
-    search_query: query,
-    formatted_query: geoData.results[0].formatted_address,
-    latitude: geoData.results[0].geometry.location.lat,
-    longitude: geoData.results[0].geometry.location.lng
-
-  };
+  const location = new Location(query, geoData);
+  
   return location;
-}
+};
+
+
+function Location(query, geoData) {
+  this.search_query = query;
+  this.formatted_query = geoData.results[0].formatted_address;
+  this.latitude = geoData.results[0].geometry.location.lat;
+  this. longitude = geoData.results[0].geometry.location.lng;
+};
+
+
 
 app.listen(PORT, () => console.log(`app is listening ${PORT}`));
