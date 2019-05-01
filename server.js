@@ -43,10 +43,12 @@ function Weather(day) {
 }
 
 function Events(location) {
-  this.url = location.event.url;
-  this.name = location.event.name[0];
-  this.eventDate = location.event.start;
-  this.summary = location.event.summary;
+  let time = Date.parse(location.start.local);
+  let newDate = new Date(time).toDateString();
+  this.event_date = newDate;
+  this.link = location.url;
+  this.name = location.name.text;
+  this.summary = location.summary;
 }
 
 //--------------------------------
@@ -55,7 +57,6 @@ function Events(location) {
 let searchCoords = (request, response) => {
   const data = request.query.data;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${data}&key=${process.env.GEOCODE_API_KEY}`;
-
   return superagent.get(url)
     .then(result => {
       response.send(new CityLocation(data, result.body.results[0]));
@@ -63,10 +64,10 @@ let searchCoords = (request, response) => {
     .catch(error => errorMessage(error, response));
 };
 
+
 let searchWeather = (request, response) => {
   const data = request.query.data;
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${data.latitude},${data.longitude}`;
-
   return superagent.get(url)
     .then(result => {
       const weatherSum = result.body.daily.data.map( day => {
@@ -78,24 +79,20 @@ let searchWeather = (request, response) => {
 };
 
 // For eventbrite
+let seachEvents = (request, response) => {
+  const data = request.query.data;
+  const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
 
+  return superagent.get(url)
+    .then(result => {
 
-// let seachEvents = (request, response) => {
-//   const data = request.query.data;
-//   const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
-
-//   return superagent.get(url)
-//     .then(result => {
-//       console.log(result);
-//       // console.log(result.body.event);
-
-//       // const eventSum = result.event.map( location => {
-//       //   return new Events(location);
-//       // });
-//       // response.send(eventSum);
-//     })
-//     .catch(error => errorMessage(error, response));
-// };
+      const eventSum = result.body.events.map( eventInfo => {
+        return new Events(eventInfo);
+      });
+      response.send(eventSum);
+    })
+    .catch(error => errorMessage(error, response));
+};
 
 
 //--------------------------------
@@ -106,7 +103,7 @@ app.get('/location', searchCoords);
 app.get('/weather', searchWeather);
 
 // For eventbrite
-// app.get('/events', seachEvents);
+app.get('/events', seachEvents);
 
 //--------------------------------
 // Power On
