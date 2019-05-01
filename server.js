@@ -24,7 +24,7 @@ app.use(cors());
 //--------------------------------
 let errorMessage = (error, response) => {
   console.error(error);
-  if (response) resonse.status(500).send('internal server error encountered');
+  if (response) response.status(500).send('internal server error encountered');
 };
 
 //--------------------------------
@@ -61,13 +61,13 @@ let searchWeather = (request, response) => {
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${data.latitude},${data.longitude}`;
 
   return superagent.get(url)
-  .then(result => {
-    const weatherSum = result.body.daily.data.map( day => {
-      return new Weather(day);
-    });
-    response.send(weatherSum);
-  })
-  .catch(error => errorMessage(error, response));
+    .then(result => {
+      const weatherSum = result.body.daily.data.map( day => {
+        return new Weather(day);
+      });
+      response.send(weatherSum);
+    })
+    .catch(error => errorMessage(error, response));
 };
 
 //--------------------------------
