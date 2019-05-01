@@ -106,7 +106,8 @@ app.get('/location', searchCoords);
 app.get('/weather', searchWeather);
 
 // For eventbrite
-app.get('/events', seachEvents);
+// app.get('/events', seachEvents);
+
 //--------------------------------
 // Power On
 //--------------------------------
