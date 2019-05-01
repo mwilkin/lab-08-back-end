@@ -43,9 +43,11 @@ function Weather(day) {
 }
 
 function Events(location) {
+  let time = Date.parse(location.start.local);
+  let newDate = new Date(time).toDateString();
+  this.event_date = newDate;
   this.link = location.url;
   this.name = location.name.text;
-  // this.eventDate = location.event.start;
   this.summary = location.summary;
 }
 
