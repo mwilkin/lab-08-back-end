@@ -1,7 +1,7 @@
 {
-  "name": "lab-06-back-end",
+  "name": "lab-07-back-end",
   "version": "1.0.0",
-  "description": "**Author**: Jeff and Felipe \r **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)",
+  "description": "**Author**: Ed and Felipe \r **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felipedelatorre/lab-06-back-end.git"
+    "url": "git+https://github.com/felipedelatorre/lab-07-back-end.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/felipedelatorre/lab-06-back-end/issues"
+    "url": "https://github.com/felipedelatorre/lab-07-back-end/issues"
   },
-  "homepage": "https://github.com/felipedelatorre/lab-06-back-end#readme",
+  "homepage": "https://github.com/felipedelatorre/lab-07-back-end#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
