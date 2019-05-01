@@ -42,6 +42,13 @@ function Weather(day) {
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
 
+function Events(location) {
+  this.url = location.event.url;
+  this.name = location.event.name[0];
+  this.eventDate = location.event.start;
+  this.summary = location.event.summary;
+}
+
 //--------------------------------
 // Route Callbacks
 //--------------------------------
@@ -51,9 +58,7 @@ let searchCoords = (request, response) => {
 
   return superagent.get(url)
     .then(result => {
-      console.log(result.body);
       response.send(new CityLocation(data, result.body.results[0]));
-      console.log(result.body.results[0]);
     })
     .catch(error => errorMessage(error, response));
 };
@@ -72,6 +77,27 @@ let searchWeather = (request, response) => {
     .catch(error => errorMessage(error, response));
 };
 
+// For eventbrite
+
+
+// let seachEvents = (request, response) => {
+//   const data = request.query.data;
+//   const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
+
+//   return superagent.get(url)
+//     .then(result => {
+//       console.log(result);
+//       // console.log(result.body.event);
+
+//       // const eventSum = result.event.map( location => {
+//       //   return new Events(location);
+//       // });
+//       // response.send(eventSum);
+//     })
+//     .catch(error => errorMessage(error, response));
+// };
+
+
 //--------------------------------
 // Routes
 //--------------------------------
@@ -79,6 +105,8 @@ let searchWeather = (request, response) => {
 app.get('/location', searchCoords);
 app.get('/weather', searchWeather);
 
+// For eventbrite
+app.get('/events', seachEvents);
 //--------------------------------
 // Power On
 //--------------------------------
