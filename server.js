@@ -85,7 +85,7 @@ let seachEvents = (request, response) => {
 
   return superagent.get(url)
     .then(result => {
-      console.log(result.event);
+      console.log(result.events);
       const eventSum = result.event.map( location => {
         return new Events(location);
       });
