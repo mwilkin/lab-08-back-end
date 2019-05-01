@@ -80,12 +80,12 @@ let searchWeather = (request, response) => {
 let seachEvents = (request, response) => {
   const data = request.query.data;
   const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
-  console.log(data.formatted_query);
+  console.log(data.formatted_query); //Prints Bend OR USA
 
 
   return superagent.get(url)
     .then(result => {
-
+      console.log(result);
       const eventSum = result.event.map( location => {
         return new Events(location);
       });
