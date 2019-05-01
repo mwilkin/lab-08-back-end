@@ -60,26 +60,18 @@ let searchCoords = (request, response) => {
     .catch(error => handleError(error, response));
 };
 
+let searchWeather = (request, response) => {
+  const data = request.query.data;
+  const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${data.latitude},${data.longitude}`;
 
-
-
-
-
-let searchWeather = (query) => {
-  const weatherData = require('./data/darksky.json');
-  const weather = new Weather(searchCoords(query), weatherData);
-  const weatherArr = [];
-  weather.forecast.forEach( (element) => {
-    let myDate = new Date(element.time * 1000);
-    let newDate = myDate.toDateString();
-    let tempObj = {
-      forecast: element['summary'],
-      time: newDate,
-    };
-    weatherArr.push(tempObj);
-  });
-
-  return weatherArr;
+  return superagent.get(url)
+  .then(result => {
+    const weatherSum = result.body.daily.data.map( day => {
+      return new Weather(day);
+    });
+    response.send(weatherSum);
+  })
+  .catch(error => handleError(error, response));
 };
 
 //--------------------------------
@@ -87,23 +79,7 @@ let searchWeather = (query) => {
 //--------------------------------
 
 app.get('/location', searchCoords);
-
-
-
-app.get('/weather', (request, response) => {
-  try {
-    const weatherData = searchWeather(request.query.data);
-    response.send(weatherData);
-  }
-  catch(error) {
-    console.error(error);
-    let message = errorMessage();
-    response.status(message.status).send(message.responseText);
-  }
-});
-
-
-
+app.get('/weather', searchWeather);
 
 //--------------------------------
 // Power On
