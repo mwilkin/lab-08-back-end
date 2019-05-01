@@ -22,13 +22,9 @@ app.use(cors());
 //--------------------------------
 // Error Message
 //--------------------------------
-let errorMessage = () => {
-  let errorObj = {
-    status: 500,
-    responseText: 'Sorry something went wrong',
-  };
-  console.log(errorObj);
-  return errorObj;
+let errorMessage = (error, response) => {
+  console.error(error);
+  if (response) resonse.status(500).send('internal server error encountered');
 };
 
 //--------------------------------
@@ -57,7 +53,7 @@ let searchCoords = (request, response) => {
     .then(result => {
       response.send(new Location(data, result.body.results[0]));
     })
-    .catch(error => handleError(error, response));
+    .catch(error => errorMessage(error, response));
 };
 
 let searchWeather = (request, response) => {
@@ -71,7 +67,7 @@ let searchWeather = (request, response) => {
     });
     response.send(weatherSum);
   })
-  .catch(error => handleError(error, response));
+  .catch(error => errorMessage(error, response));
 };
 
 //--------------------------------
