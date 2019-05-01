@@ -10,6 +10,7 @@ require('dotenv').config();
 //--------------------------------
 const express = require('express');
 const cors = require('cors');
+const superagent = require('superagent');
 
 //--------------------------------
 //Application setup
@@ -19,30 +20,50 @@ const app = express();
 app.use(cors());
 
 //--------------------------------
+// Error Message
+//--------------------------------
+let errorMessage = () => {
+  let errorObj = {
+    status: 500,
+    responseText: 'Sorry something went wrong',
+  };
+  console.log(errorObj);
+  return errorObj;
+};
+
+//--------------------------------
 // Constructors Functions
 //--------------------------------
-function Location(query, geoData) {
+function Location(query, data) {
   this.search_query = query;
-  this.formatted_query = geoData.results[0].formatted_address;
-  this.latitude = geoData.results[0].geometry.location.lat;
-  this.longitude = geoData.results[0].geometry.location.lng;
+  this.formatted_query = data.formatted_address;
+  this.latitude = data.geometry.location.lat;
+  this.longitude = data.geometry.location.lng;
 }
 
-function Weather(query, weatherData) {
-  this.search_query = query;
-  this.latitude = query.latitude;
-  this.longitude = query.longitude;
-  this.forecast = weatherData.daily.data;
+function Weather(day) {
+  this.forecast = day.summary;
+  this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
 
 //--------------------------------
 // Route Callbacks
 //--------------------------------
-let searchCoords = (query) => {
-  const geoData = require('./data/geo.json');
-  const location = new Location(query, geoData);
-  return location;
+let searchCoords = (request, response) => {
+  const data = request.query.data;
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${data}&key=${process.env.GEOCODE_API_KEY}`;
+
+  return superagent.get(url)
+    .then(result => {
+      response.send(new Location(data, result.body.results[0]));
+    })
+    .catch(error => handleError(error, response));
 };
+
+
+
+
+
 
 let searchWeather = (query) => {
   const weatherData = require('./data/darksky.json');
@@ -64,6 +85,11 @@ let searchWeather = (query) => {
 //--------------------------------
 // Routes
 //--------------------------------
+
+app.get('/location', searchCoords);
+
+
+
 app.get('/weather', (request, response) => {
   try {
     const weatherData = searchWeather(request.query.data);
@@ -76,29 +102,8 @@ app.get('/weather', (request, response) => {
   }
 });
 
-app.get('/location', (request, response) => {
-  try {
-    const locationData = searchCoords(request.query.data);
-    response.send(locationData);
-  }
-  catch(error) {
-    console.error(error);
-    let message = errorMessage();
-    response.status(message.status).send(message.responseText);
-  }
-});
 
-//--------------------------------
-// Error Message
-//--------------------------------
-let errorMessage = () => {
-  let errorObj = {
-    status: 500,
-    responseText: 'Sorry something went wrong',
-  };
-  console.log(errorObj);
-  return errorObj;
-};
+
 
 //--------------------------------
 // Power On

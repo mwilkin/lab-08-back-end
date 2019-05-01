@@ -5,8 +5,8 @@
 
 
 ## Number and name of feature: #1 Data Formatting
-* Estimate of time needed to complete __time__
-* Start time: __time__
+* Estimate of time needed to complete 1hr
+* Start time: 8am
 * Finish time: __time__
 * Actual time needed to complete: __time__
 
