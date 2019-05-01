@@ -43,10 +43,10 @@ function Weather(day) {
 }
 
 function Events(location) {
-  this.link = location.event.url;
-  this.name = location.event.name[0];
-  this.eventDate = location.event.start;
-  this.summary = location.event.summary;
+  this.link = location.url;
+  this.name = location.name.text;
+  // this.eventDate = location.event.start;
+  this.summary = location.summary;
 }
 
 //--------------------------------
@@ -80,16 +80,12 @@ let searchWeather = (request, response) => {
 let seachEvents = (request, response) => {
   const data = request.query.data;
   const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
-  console.log(data.formatted_query); //Prints Bend OR USA
-
 
   return superagent.get(url)
     .then(result => {
-      console.log(result.body.events[0].name);
-      console.log(result.body.events[1].name);
 
-      const eventSum = result.event.map( location => {
-        return new Events(location);
+      const eventSum = result.body.events.map( eventInfo => {
+        return new Events(eventInfo);
       });
       response.send(eventSum);
     })
