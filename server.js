@@ -52,6 +52,7 @@ let searchCoords = (request, response) => {
   return superagent.get(url)
     .then(result => {
       response.send(new CityLocation(data, result.body.results[0]));
+      console.log(result.body.results[0]);
     })
     .catch(error => errorMessage(error, response));
 };
