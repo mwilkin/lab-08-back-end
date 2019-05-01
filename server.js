@@ -15,7 +15,7 @@ const superagent = require('superagent');
 //--------------------------------
 //Application setup
 //--------------------------------
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
@@ -30,7 +30,7 @@ let errorMessage = (error, response) => {
 //--------------------------------
 // Constructors Functions
 //--------------------------------
-function Location(query, data) {
+function CityLocation(query, data) {
   this.search_query = query;
   this.formatted_query = data.formatted_address;
   this.latitude = data.geometry.location.lat;
@@ -51,7 +51,7 @@ let searchCoords = (request, response) => {
 
   return superagent.get(url)
     .then(result => {
-      response.send(new Location(data, result.body.results[0]));
+      response.send(new CityLocation(data, result.body.results[0]));
     })
     .catch(error => errorMessage(error, response));
 };
