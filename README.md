@@ -1,47 +1,34 @@
-# Lab 07-API
+# Lab 08-Persistence with SQL Database
 
-**Author**: Ed and Felipe
+**Author**:  Felipe and Matt
 **Version**: 1.1.0 (increment the patch/fix version number if you make more commits past your first submission)
 
 
-## Number and name of feature: #1 Data Formatting
+## Number and name of feature: #1 Database
 * Estimate of time needed to complete 1hr
-* Start time: 8am
+* Start time: 8:16 am
 * Finish time: __time__
 * Actual time needed to complete: __time__
 
-## Number and name of feature: #2 Locations
+## Number and name of feature: #2 Server
 * Estimate of time needed to complete __time__
 * Start time: __time__
 * Finish time: __time__
 * Actual time needed to complete: __time__
 
-## Number and name of feature: #3 Weather
+## Number and name of feature: #3 Deploy
 * Estimate of time needed to complete __time__
 * Start time: __time__
 * Finish time: __time__
 * Actual time needed to complete: __time__
-
-## Number and name of feature: #4 Eventbrite
-* Estimate of time needed to complete __time__
-* Start time: __time__
-* Finish time: __time__
-* Actual time needed to complete: __time__
-
-## Number and name of feature: #5 Meetups
-* Estimate of time needed to complete __time__
-* Start time: __time__
-* Finish time: __time__
-* Actual time needed to complete: __time__
-
-
-
 
 ## Overview
 <!-- Provide a high level overview of what this application is and why you are building it, beyond the fact that it's an assignment for this class. (i.e. What's your problem domain?) -->
 
 ## Getting Started
-<!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
+$ nmp init
+$ nmp install --save cors superagent express dotenv
+
 
 ## Architecture
 <!-- Provide a detailed description of the application design. What technologies (languages, libraries, etc) you're using, and any other relevant design information. -->
