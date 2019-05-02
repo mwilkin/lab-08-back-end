@@ -11,9 +11,26 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
+const pg = require('pg');
 
 //--------------------------------
-//Application setup
+// Database Configuration
+//--------------------------------
+// 1. Create a client with connection url
+
+const client = new pg.Client(process.env.DATABASE_URL);
+
+//2. Connect client
+
+client.connect();
+
+// 3. Add event listeners
+
+client.on('err', err => console.log(err));
+
+
+//--------------------------------
+// Application setup
 //--------------------------------
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -22,6 +39,9 @@ app.use(cors());
 //--------------------------------
 // Error Message
 //--------------------------------
+
+// This a error message callback function which will send a server status message of 500, if an internal server error is encountered.
+
 let errorMessage = (error, response) => {
   console.error(error);
   if (response) response.status(500).send('internal server error encountered');
@@ -30,6 +50,9 @@ let errorMessage = (error, response) => {
 //--------------------------------
 // Constructors Functions
 //--------------------------------
+
+// Constructor functions which filter the data from the query response that we are interested in.
+
 function CityLocation(query, data) {
   this.search_query = query;
   this.formatted_query = data.formatted_address;
@@ -54,6 +77,9 @@ function Events(location) {
 //--------------------------------
 // Route Callbacks
 //--------------------------------
+
+// API callback functions that reach out to the internet to the specified APIs for desired data. One for each API serve we are hitting.
+
 let searchCoords = (request, response) => {
   const data = request.query.data;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${data}&key=${process.env.GEOCODE_API_KEY}`;
@@ -78,7 +104,6 @@ let searchWeather = (request, response) => {
     .catch(error => errorMessage(error, response));
 };
 
-// For eventbrite
 let seachEvents = (request, response) => {
   const data = request.query.data;
   const url = `https://www.eventbriteapi.com/v3/events/search?token=${process.env.EVENTBRITE_API_KEY}&location.address=${data.formatted_query}`;
@@ -99,10 +124,10 @@ let seachEvents = (request, response) => {
 // Routes
 //--------------------------------
 
+// Refer to how our application enpoints (URI) respond to the client requests.
+
 app.get('/location', searchCoords);
 app.get('/weather', searchWeather);
-
-// For eventbrite
 app.get('/events', seachEvents);
 
 //--------------------------------
