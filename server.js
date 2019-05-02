@@ -114,7 +114,7 @@ Weather.fetchWeather = (query) => {
 
   return superagent.get(url)
     .then(result => {
-      console.log(result);
+      console.log(result.body);
       if (!result.body.daily.data.length) throw 'No data';
       const weatherSum = result.body.daily.data.map( day => new Weather(day));
       return weatherSum.save()
@@ -244,7 +244,7 @@ let seachEvents = (request, response) => {
 
 app.get('/location', searchCoords);
 app.get('/weather', searchWeather);
-// app.get('/events', seachEvents);
+app.get('/events', seachEvents);
 
 //--------------------------------
 // Power On
