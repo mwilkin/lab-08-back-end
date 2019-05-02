@@ -11,9 +11,17 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
+const pg = require('pg');
 
 //--------------------------------
-//Application setup
+// Database Configuration
+//--------------------------------
+
+
+
+
+//--------------------------------
+// Application setup
 //--------------------------------
 const PORT = process.env.PORT || 3000;
 const app = express();
