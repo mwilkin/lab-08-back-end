@@ -16,8 +16,17 @@ const pg = require('pg');
 //--------------------------------
 // Database Configuration
 //--------------------------------
+// 1. Create a client with connection url
 
+const client = new pg.Client(process.env.DATABASE_URL);
 
+//2. Connect client
+
+client.connect();
+
+// 3. Add event listeners
+
+client.on('err', err => console.log(err));
 
 
 //--------------------------------
