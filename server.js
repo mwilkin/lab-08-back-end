@@ -60,10 +60,96 @@ function CityLocation(query, data) {
   this.longitude = data.geometry.location.lng;
 }
 
+// Static function
+
+CityLocation.fetchLocation = (query) => {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
+
+  return superagent.get(url)
+    .then(result => {
+      if(!result.body.results.length) throw 'No data';
+      let location = new CityLocation(query, result.body.results[0]);
+      return location.save()
+        .then(result => {
+          location.id = result.rows[0].id;
+          return location;
+        });
+    });
+};
+
+
+CityLocation.lookup = handler => {
+  const SQL = 'SELECT * FROM locations WHERE search_query=$1;';
+  const values = [handler.query];
+
+  return client.query(SQL, values)
+    .then(results => {
+      if(results.rowCount > 0){
+        handler.cacheHit(results);
+      }else{
+        handler.cacheMiss(results);
+      }
+    })
+    .catch(console.error);
+};
+
+CityLocation.prototype.save = function(){
+  let SQL = `INSERT INTO locations
+    (search_query, formatted_query, latitude, longitude)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id;`;
+
+  let values = Object.values(this);
+
+  return client.query(SQL, values);
+};
+
 function Weather(day) {
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
+
+Weather.fetchWeather = (query) => {
+  const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${query.latitude},${query.longitude}`;
+
+  return superagent.get(url)
+    .then(result => {
+      console.log(result.body);
+      if (!result.body.daily.data.length) throw 'No data';
+      const weatherSum = result.body.daily.data.map( day => new Weather(day));
+      return weatherSum.save()
+        .then(result => {
+          weatherSum.id = result.rows[0].id;
+          return weatherSum;
+        });
+    })
+    .catch(console.error);
+};
+
+Weather.lookup = handler => {
+  const SQL = 'SELECT * FROM weathers WHERE forecast=$1;';
+  const values = [handler.query];
+  return client.query(SQL, values)
+    .then(results => {
+      if(results.rowCount > 0){
+        handler.cacheHit(results);
+      }else{
+        handler.cacheMiss(results);
+      }
+    })
+    .catch(console.error);
+};
+
+Weather.prototype.save = function(){
+  let SQL = `INSERT INTO weathers
+    (forecast, time, location_id)
+    VALUES ($1, $2, $3)
+    RETURNING id;`;
+
+  let values = Object.values(this);
+
+  return client.query(SQL, values);
+};
 
 function Events(location) {
   let time = Date.parse(location.start.local);
@@ -81,28 +167,53 @@ function Events(location) {
 // API callback functions that reach out to the internet to the specified APIs for desired data. One for each API serve we are hitting.
 
 let searchCoords = (request, response) => {
-  const data = request.query.data;
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${data}&key=${process.env.GEOCODE_API_KEY}`;
-  return superagent.get(url)
-    .then(result => {
-      response.send(new CityLocation(data, result.body.results[0]));
-    })
-    .catch(error => errorMessage(error, response));
+  const locationHandler = {
+    query: request.query.data,
+    cacheHit: results => {
+      console.log('Got data from DB');
+      response.send(results.rows[0]);
+      
+    },
+    cacheMiss: () => {
+      console.log('Fetching ...');
+      // console.log(request.query.data);
+      CityLocation.fetchLocation(request.query.data)
+        .then(results => response.send(results));
+    }
+  };
+  CityLocation.lookup(locationHandler);
 };
-
 
 let searchWeather = (request, response) => {
-  const data = request.query.data;
-  const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${data.latitude},${data.longitude}`;
-  return superagent.get(url)
-    .then(result => {
-      const weatherSum = result.body.daily.data.map( day => {
-        return new Weather(day);
-      });
-      response.send(weatherSum);
-    })
-    .catch(error => errorMessage(error, response));
+  // console.log(request);
+  const weatherHandler = {
+    query: request.query.data,
+    cacheHit: results => {
+      console.log('Got weather data from DB');
+      response.send(results[0]);
+      console.log('here');
+    },
+    cacheMiss: () => {
+      console.log('Fetching weather data....');
+      Weather.fetchWeather(request.query.data)
+        .then(results => response.send(results));
+    }
+  };
+  Weather.lookup(weatherHandler);
 };
+
+// let searchWeather = (request, response) => {
+//   const data = request.query.data;
+//   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${data.latitude},${data.longitude}`;
+//   return superagent.get(url)
+//     .then(result => {
+//       const weatherSum = result.body.daily.data.map( day => {
+//         return new Weather(day);
+//       });
+//       response.send(weatherSum);
+//     })
+//     .catch(error => errorMessage(error, response));
+// };
 
 let seachEvents = (request, response) => {
   const data = request.query.data;
@@ -119,6 +230,11 @@ let seachEvents = (request, response) => {
     .catch(error => errorMessage(error, response));
 };
 
+// Dynamic lookup function
+
+// let dynamicLookup = (request, response) => {
+  
+// };
 
 //--------------------------------
 // Routes
